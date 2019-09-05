@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+[ "$DEBUG" == "true" ] && env && set -x
+
+export DAEMON=cat
+
+USER=frontline
+HOME=$ROOT_PATH/home/probe
+
+# Create a frontline user with current uid if needed
+if ! whoami &> /dev/null; then
+  if [ -w /etc/passwd ]; then
+    echo "$USER:x:$(id -u):0::$HOME:/bin/bash" >> /etc/passwd
+  fi
+fi
+
+./bin/bootstrap $@

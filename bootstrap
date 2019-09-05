@@ -1,0 +1,37 @@
+#!/bin/bash
+
+if [ "x$DAEMON" = "x" ]; then
+  echo "And error occurred: environment variable DAEMON not set, exiting."
+  exit 1
+fi
+
+if [ "$HOME" = "x" ]; then
+  echo "And error occurred: environment variable HOME not set, exiting."
+  exit 2
+fi
+
+stop() {
+  echo "Received SIGINT or SIGTERM."
+  echo "Shutting down $DAEMON."
+  # Get PID
+  pid=$(cat $ROOT_PATH/var/run/$DAEMON/$DAEMON.pid)
+  # Signal the daemon
+  kill -SIGTERM "$pid"
+  # Wait for exit
+  wait "$pid"
+  # All done
+  echo "Exiting"
+}
+
+echo "Running command \"$@\"."
+
+if [ "$(basename $1)" == "$DAEMON" ]; then
+  trap stop SIGINT SIGTERM
+  $@ &
+  pid="$!"
+  mkdir -p $ROOT_PATH/var/run/$DAEMON && \
+    echo "$pid" > $ROOT_PATH/var/run/$DAEMON/$DAEMON.pid
+  wait "$pid" && exit $?
+else
+  exec "$@"
+fi

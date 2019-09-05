@@ -1,1 +1,0 @@
-# frontline-injector-docker-image
