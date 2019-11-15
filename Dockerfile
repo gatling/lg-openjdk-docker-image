@@ -1,4 +1,6 @@
-FROM openjdk:8u222-jdk-slim
+ARG JAVA_VERSION=8
+
+FROM openjdk:$JAVA_VERSION-jre-slim
 
 ENV ROOT_PATH /opt/frontline/probe
 
