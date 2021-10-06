@@ -1,6 +1,6 @@
-ARG JAVA_VERSION=8
+ARG base_image
 
-FROM openjdk:$JAVA_VERSION-jre-slim
+FROM $base_image
 
 ENV ROOT_PATH /opt/frontline/probe
 

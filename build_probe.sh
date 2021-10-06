@@ -1,22 +1,23 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 set -eux
 
-JAVA_MAJOR_VERSION=$1
-BASE_DOCKER_IMAGE="openjdk:${JAVA_MAJOR_VERSION}-jre-slim"
+java_major="$1"
 
-docker pull "${BASE_DOCKER_IMAGE}"
+base_image="openjdk:${java_major}-jre-slim"
 
-EXACT_JAVA_VERSION=$(docker run --rm "$BASE_DOCKER_IMAGE" java -version 2>&1 | awk -F '"' '/version/ {print $2}')
+docker pull "$base_image"
+
+java_version=$(docker run --rm "$base_image" java -version 2>&1 | awk -F '"' '/version/ {print $2}')
 
 docker build \
-  --build-arg=JAVA_VERSION="$JAVA_MAJOR_VERSION" \
-  -t gatlingcorp/frontline-injector:"$EXACT_JAVA_VERSION" \
+  --build-arg=base_image="$base_image" \
+  -t gatlingcorp/frontline-injector:"$java_version" \
   .
 
 docker tag \
-  gatlingcorp/frontline-injector:"$EXACT_JAVA_VERSION" \
-  gatlingcorp/frontline-injector:"$JAVA_MAJOR_VERSION"
+  gatlingcorp/frontline-injector:"$java_version" \
+  gatlingcorp/frontline-injector:"$java_major"
 
-docker push gatlingcorp/frontline-injector:"$EXACT_JAVA_VERSION"
-docker push gatlingcorp/frontline-injector:"$JAVA_MAJOR_VERSION"
+docker push gatlingcorp/frontline-injector:"$java_version"
+docker push gatlingcorp/frontline-injector:"$java_major"
