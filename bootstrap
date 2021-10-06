@@ -5,7 +5,7 @@ if [ "x$DAEMON" = "x" ]; then
   exit 1
 fi
 
-if [ "$HOME" = "x" ]; then
+if [ "x$HOME" = "x" ]; then
   echo "And error occurred: environment variable HOME not set, exiting."
   exit 2
 fi
