@@ -2,6 +2,11 @@ ARG base_image
 
 FROM $base_image
 
+RUN apt-get update ; apt-get install -y \
+      curl \
+      jq  &&\
+      rm -rf /var/lib/{apt,dpkg,cache,log}/
+
 ENV ROOT_PATH /opt/frontline/probe
 
 COPY probe bootstrap ${ROOT_PATH}/bin/
