@@ -5,10 +5,10 @@ set -e
 
 export DAEMON=cat
 
-USER=frontline
-HOME=$ROOT_PATH/home/probe
+USER=gatling
+HOME=$ROOT_PATH/home/gatling
 
-# Create a frontline user with current uid if needed
+# Create a gatling user with current uid if needed
 if ! whoami &> /dev/null; then
   if [ -w /etc/passwd ]; then
     echo "$USER:x:$(id -u):0::$HOME:/bin/bash" >> /etc/passwd
