@@ -12,7 +12,9 @@ jobs:
     name: DockerHub
     strategy:
       matrix:
-        java: [8, 11, 17]
+        java: [8, 11, 17, 19]
+    env:
+      JAVA_LATEST: 19
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -26,4 +28,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Publish to DockerHub
-        run: ./build_probe.sh "${{ matrix.java }}"
+        run: ./build_probe.sh "${{ matrix.java }}" "${{ env.JAVA_LATEST }}"
