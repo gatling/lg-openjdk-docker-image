@@ -12,9 +12,9 @@ jobs:
     name: DockerHub
     strategy:
       matrix:
-        java: [8, 11, 17, 19]
+        java: [8, 11, 17, 20]
     env:
-      JAVA_LATEST: 19
+      JAVA_LATEST: 20
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
