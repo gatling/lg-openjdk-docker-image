@@ -6,13 +6,30 @@ set -e
 export DAEMON=cat
 
 USER=gatling
-HOME=$ROOT_PATH/home/gatling
 
-# Create a gatling user with current uid if needed
-if ! whoami &> /dev/null; then
-  if [ -w /etc/passwd ]; then
-    echo "$USER:x:$(id -u):0::$HOME:/bin/bash" >> /etc/passwd
-  fi
+stop() {
+  echo "Received SIGINT or SIGTERM."
+  echo "Shutting down $DAEMON."
+  # Get PID
+  pid=$(cat "$ROOT_PATH/var/run/$DAEMON/$DAEMON.pid")
+  # Signal the daemon
+  kill -SIGTERM "$pid"
+  # Wait for exit
+  wait "$pid"
+  # All done
+  echo "Exiting"
+}
+
+echo "Running command \"$*\"."
+
+if [ "$(basename "$1")" == "$DAEMON" ]; then
+  trap stop SIGINT SIGTERM
+  "$@" &
+  pid="$!"
+  mkdir -p "$ROOT_PATH/var/run/$DAEMON" && \
+    echo "$pid" > "$ROOT_PATH/var/run/$DAEMON/$DAEMON.pid"
+  wait "$pid" && exit $?
+else
+  exec "$@"
 fi
 
-./bin/bootstrap $@

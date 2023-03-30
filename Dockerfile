@@ -1,19 +1,13 @@
-ARG base_image
+ARG BASE_IMAGE
 
-FROM $base_image
-
-RUN apt-get update && \
-    apt-get install -y \
-      curl \
-      jq && \
-    rm -rf /var/lib/{apt,dpkg,cache,log}/
+FROM $BASE_IMAGE
 
 ENV ROOT_PATH /opt/gatling
 
-COPY docker-entrypoint bootstrap ${ROOT_PATH}/bin/
+COPY docker-entrypoint ${ROOT_PATH}/bin/
 
-RUN chmod 755 ${ROOT_PATH}/bin/docker-entrypoint ${ROOT_PATH}/bin/bootstrap && \
-    chmod -R ug=rwx /etc/passwd /opt/gatling
+RUN chmod 755 ${ROOT_PATH}/bin/docker-entrypoint && \
+    chmod -R ug=rwx /opt/gatling
 
 WORKDIR ${ROOT_PATH}
 
