@@ -19,11 +19,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # Set up emulator for non-native platforms (the GH runners are on amd64 architecture)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
+      # Docker Buildx allows easy cross-building for different platforms
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64
+
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Publish to DockerHub
-        run: ./build_certified_image.sh "${{ matrix.java }}"
+      # build-push-action relies on Docker Buildx
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          context: .
+          platforms: linux/amd64,linux/arm64
+          tags: gatlingcorp/classic-openjdk:${{ matrix.java }}
+          build-args: |
+            BASE_IMAGE=gatlingcorp/openjdk-base:${{ matrix.java }}-jre-headless
