@@ -3,15 +3,16 @@ ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
 ENV ROOT_PATH /opt/gatling
+ENV HOME=${ROOT_PATH}
 
-COPY docker-entrypoint ${ROOT_PATH}/bin/
+COPY --chmod=775 --chown=1001:0 docker-entrypoint /opt/gatling/bin/
 
-RUN chmod 755 ${ROOT_PATH}/bin/docker-entrypoint && \
-    chmod -R ug=rwx /opt/gatling
-
-WORKDIR ${ROOT_PATH}
+RUN touch /etc/passwd && \
+    chmod -R ug=rwx /etc/passwd /opt/gatling
 
 EXPOSE 9999
 
+USER 1001
+WORKDIR ${ROOT_PATH}
 ENTRYPOINT ["./bin/docker-entrypoint"]
 CMD ["/bin/sh", "-c", "cat"]
