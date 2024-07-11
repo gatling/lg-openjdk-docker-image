@@ -7,6 +7,13 @@ export DAEMON=cat
 
 USER=gatling
 
+# Create a gatling user with current uid if needed
+if ! whoami &> /dev/null; then
+  if [ -w /etc/passwd ]; then
+    echo "$USER:x:$(id -u):0::$HOME:/bin/bash" >> /etc/passwd
+  fi
+fi
+
 stop() {
   echo "Received SIGINT or SIGTERM."
   echo "Shutting down $DAEMON."
