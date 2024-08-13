@@ -10,8 +10,6 @@ COPY --chmod=775 --chown=1001:0 docker-entrypoint /opt/gatling/bin/
 RUN touch /etc/passwd && \
     chmod -R ug=rwx /etc/passwd /opt/gatling
 
-EXPOSE 9999
-
 USER 1001
 WORKDIR ${ROOT_PATH}
 ENTRYPOINT ["./bin/docker-entrypoint"]
