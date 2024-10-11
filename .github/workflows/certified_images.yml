@@ -42,6 +42,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
+          sbom: true
+          provenance: mode=max
           context: .
           platforms: linux/amd64,linux/arm64
           tags: gatlingcorp/classic-openjdk:${{ matrix.java }}
